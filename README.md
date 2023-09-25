@@ -86,7 +86,7 @@ Flow dữ liệu của MVVM:
 
 10. Closure
 
-Closure là một block code mà có thể được sử dụng trong code. Closure có thể capture và store reference bất kì 1 biến hay 1 constant nào từ context mà nó được defined. 
+Closure là một block code mà có thể được sử dụng trong code. Closure có thể capture và store value và reference bất kì 1 biến hay 1 constant nào từ context mà nó được defined. 
 - [Capturing Values](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/closures/#Capturing-Values): 
 
 Closure có thể capture và store reference bất kì 1 biến hay 1 constant nào từ context mà nó được defined. Closure có thể refer và modify giá trị của biến trong body của nó ngay cả khi phạm vi ban đầu(`original scope`) mà defined biến đó không còn tồn tại.
@@ -104,12 +104,119 @@ func makeIncrementer(forIncrement amount: Int) -> () -> Int {
 }
 
 
-var incre = makeIncrementer(forIncrement: 10)
+var incrementByTen = makeIncrementer(forIncrement: 10)
 ```
 
-Ta thấy func `makeIncrementer` return lại ã closure nên biến `incre` là 1 closure. Mà closure là 1 `reference type`, nên `incre` sẽ tham chiếu tới closure `incrementer`. Mà `runningTotal` capturing value 2 biến 
+Ta thấy func `makeIncrementer` return lại 1 closure nên biến `incre` là 1 closure. Mà closure là 1 `reference type`, nên `incre` sẽ tham chiếu tới closure `incrementer`. Mà `runningTotal` `capturing value` 2 biến `runningTotal` và `amount`, dẫn đến
 
+```swift
+incrementByTen()
+// returns a value of 10
+incrementByTen()
+// returns a value of 20
+incrementByTen()
+// returns a value of 30
+```
 
+Ta thấy ko phải return full 10, mà return 10, 20, 30.
 
+- Từ khóa `escaping`: Một closure được gọi là `escape` khi closure đó được pass vào function như là 1 parameter của function đó và được gọi khi function đó đã return.
 
+Có 2 trường hợp mà ta cần khi viết closure:
+- Khi ta cần lưu closure đó bên ngoài function:
 
+```swift
+var completionHandlers: [() -> Void] = []
+func someFunctionWithEscapingClosure(completionHandler: @escaping () -> Void) {
+    completionHandlers.append(completionHandler)
+}
+```
+
+-  Khi fetch API
+
+11. Enum là gì
+
+`Enumeration` hay Enum còn được gọi là kiểu liệt kê, nó khai báo một nhóm các giá trị liên quan với nhau, nhằm tạo sự tường minh trong lập trình cũng như tính toán và xử lý.
+- Là kiểu tham trị
+- Không có tính thừa kế.
+
+Enumeration case có thể chứa giá trị liên kết (`associated values`). Mục đích là chứa thêm thông tin của enum case. 
+
+```swift
+enum People {
+    case viet(Int, Int)
+    case long(Int)
+}
+
+var hello = People.viet(123, 555555)
+
+switch hello {
+    case let .viet(siu, aa):
+        print("\(siu) and \(aa)")
+    case .long(let qq):
+        print("qq \(qq)")
+}
+```
+
+Khi để `case let` thì các biến bên trong không được khai báo `let` nữa. Còn khi chỉ khai báo `case` thì tất cả các biến bên trong cần khai báo `let` như ví dụ trên.
+
+Ta hay sử dụng `associated values` với kiểu dữ liệu `Result`. `Result` được triển khai như 1 enum có 2 case là `success` và `failure`. `failure` bắt buộc phải là 1 kiểu dữ liệu mà comform kiểu `Error`.
+
+```swift
+enum NetworkError: Error {
+    case badUrl(String)
+    case badRequest(String)
+}
+
+var failure: Result<Int, NetworkError> = .failure(.badUrl("URL is invinvalid"))
+var success: Result<Int, NetworkError> = .success(123123)
+
+switch failure {      //Testing with switch success
+    case let .success(value):
+        print(value)
+    case let .failure(error):
+        switch error {
+            case let .badUrl(description):
+                print("error: \(description)")
+            case let .badRequest(description):
+                print(description)
+        }
+}
+```
+
+Đôi khi làm việc với enum ta cần làm việc với `rawValue`
+
+- Raw value là giá trị mặc định được đưa ra của enumeration case, có cùng kiểu dữ liệu với enumeration. 
+- Đối với kiểu string hoặc integer, Swift tự động gán giá trị raw value cho enum case nếu case đó không được gán giá trị mặc định.
+
+```swift
+// #1
+enum Suit1: String {
+    case spades = "Spades"
+    case hearts = "Hearts"
+    case diamonds = "Diamonds"
+    case clubs = "Clubs"
+}
+
+enum Suit2: String {
+    case spades
+    case hearts
+    case diamonds
+    case clubs
+}
+
+enum Suit3: Int {
+    case spades = 1
+    case hearts
+    case diamonds
+    case clubs
+}
+
+var suit2 = Suit2(rawValue: "diamonds")
+var suit3  = Suit3(rawValue: 4)
+
+print(Suit1.spades.rawValue)
+print(Suit2.spades.rawValue)
+print(suit2)
+print(suit3)
+```
