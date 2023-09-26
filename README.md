@@ -275,11 +275,101 @@ for (index, value) in shoppingList.enumerated() {
 
 - `Set`: Set lưu các giá trị khác nhau với cùng kiểu dữ liệu mà không có sự sắp xếp nào. Ta sử dụng `Set` thay vì `Array` khi vị trí của các phần tử không quan trọng, hoặc khi muốn đảm bảo các phần tử chỉ xuất hiện 1 lần.
 
+Ta thấy rằng, trong `Set`, value chỉ xuất hiện duy nhất 1 lần nên nó kiểu dữ liệu đó cần so sánh được, lúc này kiểu dữ liệu của chúng ta phải là `hashable`. Tất cả dữ liệu như `String, Int, Double, and Bool` đều là `hashable` by default. 
+
+```swift
+var letters = Set<Character>()
+letters.insert("a")
+var favoriteGenres: Set<String> = ["Rock", "Classical", "Hip hop"]
+
+for genre in favoriteGenres {
+    print("\(genre)")
+}
+```
+
+Swift’s Set type doesn’t have a defined ordering. Để có thể duyệt qua các phần tử trong `Set`, ta thường kết hợp với `Sort`.
+
+Thông qua `Set`, ta có thể thực hiện các chức năng như kết hợp 2 `Set`, và kiểm tra xem giá trị nào tồn tại trong ở 2 `Set`, hoặc kiểm tra 2 `Sets` có chứa all, some, or none of the same values. Hình ảnh dưới đây miêu ta 2 `Set a và b`:
+
+![](Images/set.png)
+
+- `intersection()`: Là method create 1 Set mới với chỉ các giá trị chung trong cả 2.
+- `symmetricDifference()`: Là method create 1 `Set` mới mà chỉ chứa các giá trị khác nhau của 2 `Set`.
+- `union()`: Là method create 1 `Set` mới chứa tất cả giá trị trong cả 2 `Set`
+- `subtracting():` Là method create 1 `Set` mới với giá trị không chứa trong Set còn lại.
+
+```swift
+let oddDigits: Set = [1, 3, 5, 7, 9]
+let evenDigits: Set = [0, 2, 4, 6, 8]
+let singleDigitPrimeNumbers: Set = [2, 3, 5, 7]
+
+oddDigits.union(evenDigits).sorted()
+// [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+oddDigits.intersection(evenDigits).sorted()
+// []
+oddDigits.subtracting(singleDigitPrimeNumbers).sorted()
+// [1, 9]
+oddDigits.symmetricDifference(singleDigitPrimeNumbers).sorted()
+// [1, 2, 9]
+```
+
+Bên cạnh đó ta có thể kiểm tra xem 1 `Set` có là 1 `subSet` của 1 `Set` hay không,...
+
+- ` isSubset(of:)`: Kiểm tra xem tất cả values của Set có trong 
+`specified set` hay không. (`specified set` là parameter được truyền vào trong method).
+- `isSuperset(of:)`: Kiểm tra xem tất cả values của Set có chứa tất cả giá trị của `specified set` hay không.
+- ` isDisjoint(with:)`: Kiểm tra xem 2 sets có common value hay không.
+
+```swift
+let houseAnimals: Set = ["🐶", "🐱"]
+let farmAnimals: Set = ["🐮", "🐔", "🐑", "🐶", "🐱"]
+let cityAnimals: Set = ["🐦", "🐭"]
+
+houseAnimals.isSubset(of: farmAnimals)
+// true
+farmAnimals.isSuperset(of: houseAnimals)
+// true
+farmAnimals.isDisjoint(with: cityAnimals)
+// true
+```
+
+- `Dictionary`: Sử dụng `key-value` để lưu giá trị. 
+
+```swift
+var namesOfIntegers: [Int: String] = [:]
+namesOfIntegers[16] = "sixteen"
+
+var airports: [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
+var airports = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
+
+for (airportCode, airportName) in airports {
+    print("\(airportCode): \(airportName)")
+}
+
+for airportCode in airports.keys {
+    print("Airport code: \(airportCode)")
+}
+// Airport code: LHR
+// Airport code: YYZ
 
 
-15. Hashable
+for airportName in airports.values {
+    print("Airport name: \(airportName)")
+}
+// Airport name: London Heathrow
+// Airport name: Toronto Pearson
 
-Trong Swift, `Hashable` là 1 protocol cung cấp cho ta thuộc tính `hashValue`. `hashValue` được sử dụng để compare 2 instances. Để sử dụng `hashValue`, đầu tiên ta cần comform `Hashavle` như sau([Hashable](https://www.programiz.com/swift-programming/hashable)):
+let airportCodes = [String](airports.keys)
+// airportCodes is ["LHR", "YYZ"]
+
+
+let airportNames = [String](airports.values)
+// airportNames is ["London Heathrow", "Toronto Pearson"]
+```
+
+15.   Hashable
+
+Trong Swift, `Hashable` là 1 protocol cung cấp cho ta thuộc tính `hashValue`. `hashValue` được sử dụng để compare 2 instances. Để sử dụng `hashValue`, đầu tiên ta cần comform `Hashavle` như sau ([Hashable](https://www.programiz.com/swift-programming/hashable)):
 
 ```swift
 struct Employee: Hashable {
