@@ -220,3 +220,107 @@ print(Suit2.spades.rawValue)
 print(suit2)
 print(suit3)
 ```
+
+12. HTTP
+
+Http là 1 protocol mà cho phép truyền dữ liệu qua internet. Dữ liệu có thể là: text, video, âm thanh. Để có thể nhận được resource từ server, client gửi 1 bản tin `http request` tới server, server sẽ gửi lại 1 `http response`.
+
+Cấu trúc của 1 bản tin `http request` là: 
+
+![](Images/request.webp)
+
+Cấu trúc của 1 bản tin `http response` là: 
+
+![](Images/response.webp)
+
+- Get: Được sử dụng để requet 1 tài nguyên từ server
+- Post: Được sử dụng để tạo mới hoặc thêm tài nguyên (resource) vào server. HTTP Post thường có body, và các thành phần header như: content-type, content-length.
+- Put: Được sử dụng để modify resource, Put sẽ update toàn bộ data mà được truyền vào phần body, nếu ko có tài nguyên nào ứng với request, nó sẽ khởi tạo tài nguyên mới.
+- Patch: Được sử dụng để update 1 phần resource.
+- Delete: Được sử dụng để xóa resource.
+
+So sánh các phương thức:
+
+- Post và Put: Mỗi lần gọi Post thì sẽ tạo ra 1 tài nguyên mới, dẫn đến gọi nhiều lần Post sẽ sinh ra nhiều tài nguyên. Còn với Put thì cái này chỉ sửa resource đã có, dẫn đến khi gọi nhiều lần cũng chỉ ra cùng 1 kết quả.
+- Put và Patch: Với Put sẽ tạo mới tài nguyên nếu chưa có tài nguyên, hoặc sẽ sửa lại toàn bộ tài nguyên. Còn với Patch chỉ update 1 resource.
+
+13. RESTFULApi
+
+`RESTFULApi` là 1 Api mà thỏa mãn được các rang buộc của kiến trúc Rest. Các rang buộc đó là:
+
+- Sử dụng kiến trúc client-server 
+- Stateless: Nghĩa là các thông tin của client sẽ không lưu trữ lại tại server, mỗi request là độc lập
+- Uniform Interface: Mỗi 1 resource chỉ có 1 identifier(URI)
+- Cachable: Liên quan tới khả năng lưu lại và sử dụng lại responses của server. Điều này làm cải thiện hiệu năng ứng dụng, Khi nào server response lại header là cachable thì thông tin đó mới có thể được lưu lại.
+- Layer system: client có thể kết nối tới bên ủy quyền trung gian, và vẫn có thể nhận được response từ server. Chúng ta có thể thiết kế nhiều server.
+- Code on demand: Server có thể custom các chức năng của client bằng cách gửi 1 đoạn code tới client. VD khi user register 1 form, brosewr có thể hightlights lỗi luôn nhờ server.
+
+14. Collection Types
+
+Swift cung cấp cho ta 3 kiểu `collection types` chính đó là `arrays, sets, và dictionaries`.
+
+- `Array`: là mảng chứa các giá trị có cùng kiểu dữ liệu với nhau. Các giá trị này có thể suất hiện nhiều lần ở các vị trí khác nhau. Chỉ số đầu tiên của một Array là 0.
+
+Khởi tạo Array:
+
+```swift
+var someInts: [Int] = []
+var threeDoubles = Array(repeating: 0.0, count: 3)
+var shoppingList = ["Eggs", "Milk"]
+
+for (index, value) in shoppingList.enumerated() {
+    print("Item \(index + 1): \(value)")
+}
+```
+
+- `Set`: Set lưu các giá trị khác nhau với cùng kiểu dữ liệu mà không có sự sắp xếp nào. Ta sử dụng `Set` thay vì `Array` khi vị trí của các phần tử không quan trọng, hoặc khi muốn đảm bảo các phần tử chỉ xuất hiện 1 lần.
+
+
+
+15. Hashable
+
+Trong Swift, `Hashable` là 1 protocol cung cấp cho ta thuộc tính `hashValue`. `hashValue` được sử dụng để compare 2 instances. Để sử dụng `hashValue`, đầu tiên ta cần comform `Hashavle` như sau([Hashable](https://www.programiz.com/swift-programming/hashable)):
+
+```swift
+struct Employee: Hashable {
+    var name: String
+    var salary: Int
+}
+```
+
+```swift
+let obj1 = Employee(name: "Sabby", salary: 40000)
+let obj2 = Employee(name: "Cathy", salary: 30000)
+
+print("Different hash value: ")
+print(obj1.hashValue)
+print(obj2.hashValue)
+
+// initialize two objects with same property values 
+let obj3 = Employee(name: "Lanny", salary: 50000)
+let obj4 = Employee(name: "Lanny", salary: 50000)
+
+print("\nSame hash value: ")
+print(obj3.hashValue)
+print(obj4.hashValue)
+```
+
+Output:
+
+```swift
+Different hash value: 
+3934953678767833906
+4997634560615333199
+
+Same hash value: 
+1588129438168529318
+1588129438168529318
+```
+
+
+
+
+
+
+
+
